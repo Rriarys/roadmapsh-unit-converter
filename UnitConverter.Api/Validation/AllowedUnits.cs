@@ -2,39 +2,11 @@
 
 public class AllowedUnits
 {
-    public static readonly Dictionary<string, List<string>> Categories = new Dictionary<string, List<string>>
+    public static readonly Dictionary<string, List<string>> Categories = new()
     {
-        {
-            "length", new List<string>
-            {
-                "millimeter",
-                "centimeter",
-                "meter",
-                "kilometer",
-                "inch",
-                "foot",
-                "yard",
-                "mile"
-            }
-        },
-        {
-            "weight", new List<string>
-            {
-                "milligram",
-                "gram",
-                "kilogram",
-                "ounce",
-                "pound"
-            }
-        },
-        {
-            "temperature", new List<string>
-            {
-                "celsius",
-                "fahrenheit",
-                "kelvin"
-            }
-        }
+        ["length"] = ["millimeter", "centimeter", "meter", "kilometer", "inch", "foot", "yard", "mile"],
+        ["weight"] = ["milligram", "gram", "kilogram", "ounce", "pound"],
+        ["temperature"] = ["celsius", "fahrenheit", "kelvin"]
     };
 }
 
