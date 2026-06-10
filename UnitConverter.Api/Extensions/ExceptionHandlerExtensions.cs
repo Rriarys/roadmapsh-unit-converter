@@ -1,8 +1,8 @@
-﻿// Custom exception handler that logs clean messages and returns minimal JSON without RFC 9110
-using Microsoft.AspNetCore.Diagnostics;
+﻿using Microsoft.AspNetCore.Diagnostics;
 
 namespace UnitConverter.Api.Extensions;
 
+// Custom exception handler that logs clean messages and returns minimal JSON without RFC 9110
 public static class ExceptionHandlerExtensions
 {
     // Configures a clean custom exception handler without RFC bloat
