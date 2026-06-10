@@ -6,5 +6,5 @@ public class ConvertRequest
     public string Category { get; set; } = null!;
     public string FromUnit { get; set; } = null!;
     public string ToUnit { get; set; } = null!;
-    public double Value { get; set; }
+    public double? Value { get; set; }
 }
