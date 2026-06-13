@@ -1,0 +1,148 @@
+@UnitConverter.Api_HostAddress = http://localhost:5117
+
+### Length: Meter to Millimeter
+PUT {{UnitConverter.Api_HostAddress}}/convert
+Content-Type: application/json
+
+{
+  "category": "length",
+  "fromUnit": "meter",
+  "toUnit": "millimeter",
+  "value": 1
+}
+
+### Length: Meter to Centimeter
+PUT {{UnitConverter.Api_HostAddress}}/convert
+Content-Type: application/json
+
+{
+  "category": "length",
+  "fromUnit": "meter",
+  "toUnit": "centimeter",
+  "value": 1
+}
+
+### Length: Meter to Kilometer
+PUT {{UnitConverter.Api_HostAddress}}/convert
+Content-Type: application/json
+
+{
+  "category": "length",
+  "fromUnit": "meter",
+  "toUnit": "kilometer",
+  "value": 1000
+}
+
+### Length: Meter to Inch
+PUT {{UnitConverter.Api_HostAddress}}/convert
+Content-Type: application/json
+
+{
+  "category": "length",
+  "fromUnit": "meter",
+  "toUnit": "inch",
+  "value": 1
+}
+
+### Length: Meter to Foot
+PUT {{UnitConverter.Api_HostAddress}}/convert
+Content-Type: application/json
+
+{
+  "category": "length",
+  "fromUnit": "meter",
+  "toUnit": "foot",
+  "value": 1
+}
+
+### Length: Meter to Yard
+PUT {{UnitConverter.Api_HostAddress}}/convert
+Content-Type: application/json
+
+{
+  "category": "length",
+  "fromUnit": "meter",
+  "toUnit": "yard",
+  "value": 1
+}
+
+### Length: Meter to Mile
+PUT {{UnitConverter.Api_HostAddress}}/convert
+Content-Type: application/json
+
+{
+  "category": "length",
+  "fromUnit": "meter",
+  "toUnit": "mile",
+  "value": 1
+}
+
+### ----------------------------------------------------
+
+### Weight: Kilogram to Milligram
+PUT {{UnitConverter.Api_HostAddress}}/convert
+Content-Type: application/json
+
+{
+  "category": "weight",
+  "fromUnit": "kilogram",
+  "toUnit": "milligram",
+  "value": 1
+}
+
+### Weight: Kilogram to Gram
+PUT {{UnitConverter.Api_HostAddress}}/convert
+Content-Type: application/json
+
+{
+  "category": "weight",
+  "fromUnit": "kilogram",
+  "toUnit": "gram",
+  "value": 1
+}
+
+### Weight: Kilogram to Ounce
+PUT {{UnitConverter.Api_HostAddress}}/convert
+Content-Type: application/json
+
+{
+  "category": "weight",
+  "fromUnit": "kilogram",
+  "toUnit": "ounce",
+  "value": 1
+}
+
+### Weight: Kilogram to Pound
+PUT {{UnitConverter.Api_HostAddress}}/convert
+Content-Type: application/json
+
+{
+  "category": "weight",
+  "fromUnit": "kilogram",
+  "toUnit": "pound",
+  "value": 1
+}
+
+### ----------------------------------------------------
+
+### Temperature: Celsius to Fahrenheit
+PUT {{UnitConverter.Api_HostAddress}}/convert
+Content-Type: application/json
+
+{
+  "category": "temperature",
+  "fromUnit": "celsius",
+  "toUnit": "fahrenheit",
+  "value": 25
+}
+
+### Temperature: Celsius to Kelvin
+PUT {{UnitConverter.Api_HostAddress}}/convert
+Content-Type: application/json
+
+{
+  "category": "temperature",
+  "fromUnit": "celsius",
+  "toUnit": "kelvin",
+  "value": 25
+}

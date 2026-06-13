@@ -5,7 +5,16 @@ namespace UnitConverter.Api.Extensions;
 // Custom exception handler that logs clean messages and returns minimal JSON without RFC 9110
 public static class ExceptionHandlerExtensions
 {
-    // Configures a clean custom exception handler without RFC bloat
+    /// <summary>
+    /// Configures a custom exception handler that provides clean JSON error responses and suppresses verbose
+    /// diagnostics for bad requests. 
+    /// (No RFC 9110)
+    /// </summary>
+    /// <remarks>Bad requests return a 400 status with a minimal JSON response, while unhandled exceptions
+    /// return a 500 status. Diagnostic logging for <see cref="BadHttpRequestException"/> is suppressed to reduce
+    /// noise.</remarks>
+    /// <param name="app">The application builder to configure.</param>
+    /// <returns>The configured application builder for method chaining.</returns>
     public static IApplicationBuilder UseCustomExceptionHandler(this IApplicationBuilder app)
     {
         app.UseExceptionHandler(new ExceptionHandlerOptions

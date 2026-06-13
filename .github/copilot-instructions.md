@@ -23,6 +23,7 @@
 - Preserve existing user comments.
 - Write new code comments in English.
 - When modifying code, show only changed blocks unless full file output is requested.
+- Don't put dots at the end of comment lines. Use complete sentences without periods.
 
 ## Communication
 - Respond in Russian unless explicitly requested otherwise.
