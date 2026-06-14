@@ -50,11 +50,9 @@ tests/
     └── UnitConverter.Tests.csproj
 
 frontend/
-├── CSS/
-│   └── style.css
-├── JS/
-│   └── script.js
-└── index.html
+├── index.html
+├── script.js
+└── style.css
 ```
 
 ## How It Works
