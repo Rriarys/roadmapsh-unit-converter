@@ -56,3 +56,10 @@
 - fix(database): resolve migration timeout
 - refactor(tasks): simplify command parser
 - docs(readme): update installation guide
+
+## Frontend Development
+- Keep HTML, CSS, and JavaScript as simple, ascetic, and lightweight as possible.
+- Avoid modern JS frameworks (React, Angular, Vue) or complex build steps unless explicitly requested.
+- Prefer vanilla JavaScript, semantic HTML5, and basic CSS.
+- Prioritize code readability and clean UI layout over advanced visual effects or complex animations.
+- Write frontend code comments in English without periods at the end.
