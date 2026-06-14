@@ -1,0 +1,109 @@
+/* Base page styling */
+body {
+    font-family: Arial, sans-serif;
+    background: #eef4ff;
+    color: #1f2a44;
+    margin: 0;
+    padding: 40px;
+}
+
+/* Main container feel (центрируем контент визуально) */
+h1 {
+    text-align: center;
+    color: #2c4a7a;
+    margin-bottom: 30px;
+}
+
+/* Layout blocks */
+div {
+    max-width: 420px;
+    margin: 12px auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Labels */
+label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #3a4f75;
+}
+
+/* Inputs + selects */
+select,
+input {
+    padding: 10px;
+    border: 1px solid #b8c7e6;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #1f2a44;
+    font-size: 14px;
+    outline: none;
+    transition: 0.2s ease;
+}
+
+/* Focus state */
+select:focus,
+input:focus {
+    border-color: #5b86d6;
+    box-shadow: 0 0 0 3px rgba(91, 134, 214, 0.2);
+}
+
+/* Buttons */
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #5b86d6;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+/* Hover effect */
+button:hover {
+    background: #4a76c2;
+}
+
+/* Swap button slightly different */
+#swapButton {
+    background: #7aa2e3;
+}
+
+#swapButton:hover {
+    background: #678fd1;
+}
+
+/* Result block */
+#result {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c4a7a;
+}
+
+/* History section */
+#history {
+    list-style: none;
+    padding: 0;
+}
+
+#history li {
+    background: #ffffff;
+    border: 1px solid #d6e3ff;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+/* Copy button smaller */
+#copyResultButton {
+    margin-top: 8px;
+    background: #8aaee8;
+    font-size: 13px;
+}
+
+#copyResultButton:hover {
+    background: #6f97dd;
+}

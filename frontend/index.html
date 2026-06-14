@@ -1,12 +1,64 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unit Converter</title>
+    <link rel="stylesheet" href="CSS/style.css" />
+  </head>
+  <body>
+    <!-- Main page heading -->
+    <h1>Unit Converter</h1>
+
+    <!-- Unit category selector -->
+    <div>
+      <label for="category">Category</label>
+      <select id="category"></select>
+    </div>
+
+    <!-- Source unit selector -->
+    <div>
+      <label for="fromUnit">From</label>
+      <select id="fromUnit"></select>
+    </div>
+
+    <!-- Swap button -->
+    <div>
+      <button id="swapButton" onclick="swapUnits()">⇄ Swap units</button>
+    </div>
+
+    <!-- Target unit selector -->
+    <div>
+      <label for="toUnit">To</label>
+      <select id="toUnit"></select>
+    </div>
+
+    <!-- Value input field -->
+    <div>
+      <label for="value">Value</label>
+      <input id="value" type="number" step="any" placeholder="Enter value" />
+    </div>
+
+    <!-- Convert action button -->
+    <div>
+      <button id="convertButton">Convert</button>
+    </div>
+
+    <!-- Conversion result output -->
+    <div>
+      <h2>Result</h2>
+      <p id="result">-</p>
+
+      <button id="copyResultButton">Copy</button>
+    </div>
+
+    <!-- History block -->
+    <div>
+      <h2>History</h2>
+      <div id="history"></div>
+    </div>
+
+    <!-- App logic -->
+    <script src="JS/script.js"></script>
+  </body>
 </html>
