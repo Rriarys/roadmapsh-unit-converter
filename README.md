@@ -48,6 +48,13 @@ tests/
     ├── ConversionServiceTests.cs
     ├── ConvertEndpointTests.cs
     └── UnitConverter.Tests.csproj
+
+frontend/
+├── CSS/
+│   └── style.css
+├── JS/
+│   └── script.js
+└── index.html
 ```
 
 ## How It Works
@@ -78,7 +85,7 @@ The API supports only the values explicitly allowed by the backend whitelist.
 - `yard`
 - `mile`
 
-### Weight
+### Mass
 
 - `milligram`
 - `gram`
@@ -132,11 +139,11 @@ The API supports only the values explicitly allowed by the backend whitelist.
 }
 ```
 
-### Weight
+### Mass
 
 ```json
 {
-  "category": "weight",
+  "category": "mass",
   "fromUnit": "kilogram",
   "toUnit": "pound",
   "value": 1
@@ -202,7 +209,7 @@ You can use the included HTTP file:
 
 It already contains sample requests for:
 - length conversions
-- weight conversions
+- mass conversions
 - temperature conversions
 
 You can also use any HTTP client such as Postman or curl.
@@ -237,8 +244,33 @@ The test project covers:
 - validation failures
 - edge and boundary cases
 
-## Notes
+## Frontend
 
-- This README describes only the backend part of the project
-- Frontend is not included yet
-- The API is intentionally minimal and focused only on request validation and unit conversion
+The repository also includes a lightweight static frontend in the `frontend/` folder. It is a plain HTML, CSS, and JavaScript client that talks to the API and provides a simple interactive interface for unit conversion.
+
+### Frontend Features
+
+- Category selection for length, mass, and temperature
+- Source and target unit selectors
+- Swap units action
+- Numeric value input with automatic conversion
+- Manual convert button as a fallback
+- Result display with copy-to-clipboard support
+- Small local history of recent conversions
+- Client-side caching to avoid duplicate API calls for the same request
+
+### How It Works
+
+1. The page loads the available unit categories and units from the local frontend script
+2. The user selects a category, source unit, target unit, and value
+3. The frontend sends a `POST` request to `http://localhost:5117/convert`
+4. The API returns the conversion result
+5. The frontend renders the result, stores it in history, and allows copying the numeric value
+
+### Run the Frontend
+
+The frontend is static and does not require a build step.
+
+You can open `frontend/index.html` in a browser while the API is running, or serve the `frontend/` folder with any simple static file server.
+
+The frontend expects the backend to be available at `http://localhost:5117`.
