@@ -1,78 +1,100 @@
-# Unit Converter API
+# Unit Converter App
 
-Backend for a unit converter application built with ASP.NET Core Minimal API and UnitsNet.
-
-This is a small educational pet project created as part of the roadmap.sh project ideas pool:
+Small educational pet project from the roadmap.sh project ideas pool:
 https://roadmap.sh/projects/unit-converter
 
-The API accepts a conversion request, validates the input against a fixed whitelist of supported categories and units, performs the conversion through `UnitsNet`, and returns the result immediately.
+The solution is split into two parts:
 
-## Features
+- Backend exposes the conversion API, validates requests, and performs unit conversion through `UnitsNet`
+- Frontend provides a lightweight browser UI for sending conversion requests and showing results
+
+## Overview
+
+The app accepts a conversion request, checks it against a fixed whitelist of supported categories and units, delegates the calculation to `UnitsNet`, and returns the result immediately.
+
+The backend does not store data and does not implement custom conversion formulas.
+
+## Project Structure
+
+```text
+roadmapsh-unit-converter/
+├── frontend/
+│   ├── index.html
+│   ├── script.js
+│   └── style.css
+├── src/
+│   └── UnitConverter.Api/
+│       ├── Conversion/
+│       │   ├── ConversionService.cs
+│       │   └── UnitsDictionary.cs
+│       ├── Extensions/
+│       │   └── ExceptionHandlerExtensions.cs
+│       ├── Models/
+│       │   ├── ConvertRequest.cs
+│       │   └── ConvertResponse.cs
+│       ├── Validation/
+│       │   ├── AllowedUnits.cs
+│       │   └── ConvertRequestValidator.cs
+│       ├── Program.cs
+│       └── UnitConverter.Api.http
+└── tests/
+    └── UnitConverter.Tests/
+        ├── ConversionServiceTests.cs
+        ├── ConvertEndpointTests.cs
+        └── UnitConverter.Tests.csproj
+```
+
+## Responsibilities
+
+### Backend
+
+- Accept conversion requests from the frontend or any HTTP client
+- Validate category, source unit, target unit, and unit compatibility
+- Convert values using `UnitsNet`
+- Return a stable JSON response with the result and target unit
+- Handle expected and unexpected errors consistently
+
+### Frontend
+
+- Render the conversion form in the browser
+- Let the user choose category, source unit, target unit, and value
+- Send requests to the backend API
+- Display the conversion result
+- Keep a small local history and support copy-to-clipboard
+
+## How It Works
+
+1. The user enters a category, source unit, target unit, and numeric value in the frontend
+2. The frontend sends a `POST` request to the backend `/convert` endpoint
+3. The backend validates the request against the allowed whitelist
+4. The conversion is delegated to `UnitsNet`
+5. The backend returns the numeric result and the selected target unit
+6. The frontend renders the result, updates history, and allows copying the value
+
+## Backend
+
+### Features
 
 - .NET 10 backend
 - ASP.NET Core Minimal API
 - Single conversion endpoint
 - Thin wrapper over `UnitsNet`
-- Request validation with a strict whitelist
-- Consistent error handling
-- xUnit test coverage for service and endpoint behavior
+- Strict request validation with a whitelist
+- Centralized error handling
+- xUnit coverage for service and endpoint behavior
 
-## Tech Stack
+### Tech Stack
 
 - .NET 10
 - ASP.NET Core Minimal API
 - UnitsNet
 - xUnit
 
-## Project Structure
+### Supported Categories and Units
 
-```text
-src/
-└── UnitConverter.Api/
-    ├── Conversion/
-    │   ├── ConversionService.cs
-    │   └── UnitsDictionary.cs
-    ├── Extensions/
-    │   └── ExceptionHandlerExtensions.cs
-    ├── Models/
-    │   ├── ConvertRequest.cs
-    │   └── ConvertResponse.cs
-    ├── Validation/
-    │   ├── AllowedUnits.cs
-    │   └── ConvertRequestValidator.cs
-    ├── Program.cs
-    └── UnitConverter.Api.http
+The backend accepts only values explicitly allowed by its whitelist.
 
-tests/
-└── UnitConverter.Tests/
-    ├── ConversionServiceTests.cs
-    ├── ConvertEndpointTests.cs
-    └── UnitConverter.Tests.csproj
-
-frontend/
-├── index.html
-├── script.js
-└── style.css
-```
-
-## How It Works
-
-1. The client sends a JSON request to the API
-2. The API validates:
-   - category
-   - source unit
-   - target unit
-   - unit/category compatibility
-3. The conversion is delegated to `UnitsNet`
-4. The API returns the numeric result and target unit
-
-The backend does not store data and does not implement custom conversion formulas.
-
-## Supported Categories and Units
-
-The API supports only the values explicitly allowed by the backend whitelist.
-
-### Length
+#### Length
 
 - `millimeter`
 - `centimeter`
@@ -83,7 +105,7 @@ The API supports only the values explicitly allowed by the backend whitelist.
 - `yard`
 - `mile`
 
-### Mass
+#### Mass
 
 - `milligram`
 - `gram`
@@ -91,20 +113,20 @@ The API supports only the values explicitly allowed by the backend whitelist.
 - `ounce`
 - `pound`
 
-### Temperature
+#### Temperature
 
 - `celsius`
 - `fahrenheit`
 - `kelvin`
 
-## API Endpoint
+### API Endpoint
 
-### Convert units
+#### Convert units
 
 **Method:** `POST`  
 **Route:** `/convert`
 
-### Request body
+##### Request body
 
 ```json
 {
@@ -115,7 +137,7 @@ The API supports only the values explicitly allowed by the backend whitelist.
 }
 ```
 
-### Successful response
+##### Successful response
 
 ```json
 {
@@ -124,42 +146,7 @@ The API supports only the values explicitly allowed by the backend whitelist.
 }
 ```
 
-## Example Requests
-
-### Length
-
-```json
-{
-  "category": "length",
-  "fromUnit": "meter",
-  "toUnit": "millimeter",
-  "value": 1
-}
-```
-
-### Mass
-
-```json
-{
-  "category": "mass",
-  "fromUnit": "kilogram",
-  "toUnit": "pound",
-  "value": 1
-}
-```
-
-### Temperature
-
-```json
-{
-  "category": "temperature",
-  "fromUnit": "celsius",
-  "toUnit": "fahrenheit",
-  "value": 25
-}
-```
-
-## Validation Rules
+### Validation Rules
 
 The API rejects requests when:
 
@@ -170,14 +157,79 @@ The API rejects requests when:
 - source unit is not supported for the selected category
 - target unit is not supported for the selected category
 
-The backend only accepts values agreed between frontend and backend. Extra units are intentionally not supported.
+Extra units are intentionally not supported. The backend only accepts the values agreed between frontend and backend.
 
-## Error Handling
+### Error Handling
 
 The API uses centralized exception handling.
 
-Expected invalid input is returned as a client error response.  
-Unexpected conversion or runtime failures are handled without exposing unnecessary implementation details.
+Expected invalid input is returned as a client error response. Unexpected conversion or runtime failures are handled without exposing unnecessary implementation details.
+
+### Example Requests
+
+#### Length
+
+```json
+{
+  "category": "length",
+  "fromUnit": "meter",
+  "toUnit": "millimeter",
+  "value": 1
+}
+```
+
+#### Mass
+
+```json
+{
+  "category": "mass",
+  "fromUnit": "kilogram",
+  "toUnit": "pound",
+  "value": 1
+}
+```
+
+#### Temperature
+
+```json
+{
+  "category": "temperature",
+  "fromUnit": "celsius",
+  "toUnit": "fahrenheit",
+  "value": 25
+}
+```
+
+## Frontend
+
+The repository includes a lightweight static frontend in the `frontend/` folder. It is a plain HTML, CSS, and JavaScript client that talks to the backend and provides a simple interactive interface for unit conversion.
+
+### Features
+
+- Category selection for length, mass, and temperature
+- Source and target unit selectors
+- Swap units action
+- Numeric value input with automatic conversion
+- Manual convert button as a fallback
+- Result display with copy-to-clipboard support
+- Small local history of recent conversions
+- Client-side caching to avoid duplicate API calls for the same request
+
+### How It Works
+
+1. The page loads the available unit categories and units from the local frontend script
+2. The user selects a category, source unit, target unit, and value
+3. The frontend sends a `POST` request to `http://localhost:5117/convert`
+4. The backend returns the conversion result
+5. The frontend renders the result, stores it in history, and allows copying the numeric value
+
+### Run the Frontend
+
+The frontend is static and does not require a build step.
+
+You can open `frontend/index.html` in a browser while the API is running, or serve the `frontend/` folder with any simple static file server.
+
+The frontend expects the backend to be available at `http://localhost:5117`.
 
 ## Run the Project
 
@@ -185,7 +237,7 @@ Unexpected conversion or runtime failures are handled without exposing unnecessa
 
 - .NET 10 SDK
 
-### Start the API
+### Start the Backend
 
 From the repository root:
 
@@ -199,13 +251,14 @@ Or on Windows PowerShell:
 dotnet run --project .\src\UnitConverter.Api
 ```
 
-## Test the API
+## Test the Backend
 
 You can use the included HTTP file:
 
 - `src/UnitConverter.Api/UnitConverter.Api.http`
 
 It already contains sample requests for:
+
 - length conversions
 - mass conversions
 - temperature conversions
@@ -241,34 +294,3 @@ The test project covers:
 - negative scenarios
 - validation failures
 - edge and boundary cases
-
-## Frontend
-
-The repository also includes a lightweight static frontend in the `frontend/` folder. It is a plain HTML, CSS, and JavaScript client that talks to the API and provides a simple interactive interface for unit conversion.
-
-### Frontend Features
-
-- Category selection for length, mass, and temperature
-- Source and target unit selectors
-- Swap units action
-- Numeric value input with automatic conversion
-- Manual convert button as a fallback
-- Result display with copy-to-clipboard support
-- Small local history of recent conversions
-- Client-side caching to avoid duplicate API calls for the same request
-
-### How It Works
-
-1. The page loads the available unit categories and units from the local frontend script
-2. The user selects a category, source unit, target unit, and value
-3. The frontend sends a `POST` request to `http://localhost:5117/convert`
-4. The API returns the conversion result
-5. The frontend renders the result, stores it in history, and allows copying the numeric value
-
-### Run the Frontend
-
-The frontend is static and does not require a build step.
-
-You can open `frontend/index.html` in a browser while the API is running, or serve the `frontend/` folder with any simple static file server.
-
-The frontend expects the backend to be available at `http://localhost:5117`.
