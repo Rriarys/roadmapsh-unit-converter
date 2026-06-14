@@ -96,7 +96,7 @@ The API supports only the values explicitly allowed by the backend whitelist.
 
 ### Convert units
 
-**Method:** `PUT`  
+**Method:** `POST`  
 **Route:** `/convert`
 
 ### Request body
@@ -210,7 +210,7 @@ You can also use any HTTP client such as Postman or curl.
 ### Example with curl
 
 ```bash
-curl -X PUT http://localhost:5117/convert \
+curl -X POST http://localhost:5117/convert \
   -H "Content-Type: application/json" \
   -d '{
     "category": "length",

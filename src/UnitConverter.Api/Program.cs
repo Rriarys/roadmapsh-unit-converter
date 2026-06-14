@@ -13,8 +13,8 @@ var app = builder.Build();
 // Custom exception handling middleware
 app.UseCustomExceptionHandler();
 
-// PUT
-app.MapPut("/convert", (ConvertRequest request, ConversionService conversionService) =>
+// POST
+app.MapPost("/convert", (ConvertRequest request, ConversionService conversionService) =>
 {
     var (isValid, error) = ConvertRequestValidator.Validate(request);
     if (!isValid)

@@ -23,539 +23,10 @@ namespace UnitConverter.Tests
             await _factory.DisposeAsync();
         }
 
-        #region Valid Request Tests
+        #region Valid Conversion Tests
 
         [Fact]
-        public async Task Put_Convert_WithValidLengthRequest_ReturnsOkWithCorrectResult()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "meter",
-                ToUnit = "kilometer",
-                Value = 1000
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
-            Assert.NotNull(result);
-            Assert.Equal(1.0, result.Result);
-            Assert.Equal("kilometer", result.ToUnit);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithValidMassRequest_ReturnsOkWithCorrectResult()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "mass",
-                FromUnit = "kilogram",
-                ToUnit = "gram",
-                Value = 1
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
-            Assert.NotNull(result);
-            Assert.Equal(1000.0, result.Result);
-            Assert.Equal("gram", result.ToUnit);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithValidTemperatureRequest_ReturnsOkWithCorrectResult()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "temperature",
-                FromUnit = "celsius",
-                ToUnit = "fahrenheit",
-                Value = 0
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
-            Assert.NotNull(result);
-            Assert.Equal(32.0, result.Result);
-            Assert.Equal("fahrenheit", result.ToUnit);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithNullValue_ReturnsOkWithNullResult()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "meter",
-                ToUnit = "kilometer",
-                Value = null
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithZeroValue_ReturnsOkWithZeroResult()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "meter",
-                ToUnit = "kilometer",
-                Value = 0
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
-            Assert.NotNull(result);
-            Assert.Equal(0.0, result.Result);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithNegativeValue_ReturnsOkWithNegativeResult()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "meter",
-                ToUnit = "kilometer",
-                Value = -1000
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
-            Assert.NotNull(result);
-            Assert.Equal(-1.0, result.Result);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithDecimalValue_ReturnsOkWithCorrectResult()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "meter",
-                ToUnit = "millimeter",
-                Value = 0.5
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
-            Assert.NotNull(result);
-            Assert.Equal(500.0, result.Result);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithSameUnitConversion_ReturnsOkWithOriginalValue()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "meter",
-                ToUnit = "meter",
-                Value = 42.5
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
-            Assert.NotNull(result);
-            Assert.Equal(42.5, result.Result);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithUppercaseCategory_ReturnsOk()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "LENGTH",
-                FromUnit = "meter",
-                ToUnit = "kilometer",
-                Value = 1000
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
-            Assert.NotNull(result);
-            Assert.Equal(1.0, result.Result);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithMixedcaseCategory_ReturnsOk()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "MaSs",
-                FromUnit = "gram",
-                ToUnit = "kilogram",
-                Value = 1000
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
-            Assert.NotNull(result);
-            Assert.Equal(1.0, result.Result);
-        }
-
-        #endregion
-
-        #region Invalid Category Tests
-
-        [Fact]
-        public async Task Put_Convert_WithInvalidCategory_ReturnsBadRequest()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "invalid",
-                FromUnit = "meter",
-                ToUnit = "kilometer",
-                Value = 100
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Invalid category", content);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithUnknownCategory_ReturnsBadRequest()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "weight",
-                FromUnit = "kilogram",
-                ToUnit = "gram",
-                Value = 1
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Invalid category", content);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithNullCategory_ReturnsBadRequest()
-        {
-            var request = new ConvertRequest
-            {
-                Category = null!,
-                FromUnit = "meter",
-                ToUnit = "kilometer",
-                Value = 100
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.Contains("required", content, StringComparison.OrdinalIgnoreCase);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithEmptyCategory_ReturnsBadRequest()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "",
-                FromUnit = "meter",
-                ToUnit = "kilometer",
-                Value = 100
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.Contains("required", content, StringComparison.OrdinalIgnoreCase);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithWhitespaceCategory_ReturnsBadRequest()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "   ",
-                FromUnit = "meter",
-                ToUnit = "kilometer",
-                Value = 100
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.Contains("required", content, StringComparison.OrdinalIgnoreCase);
-        }
-
-        #endregion
-
-        #region Invalid FromUnit Tests
-
-        [Fact]
-        public async Task Put_Convert_WithInvalidFromUnit_ReturnsBadRequest()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "invalid",
-                ToUnit = "kilometer",
-                Value = 100
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Invalid from units", content);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithNullFromUnit_ReturnsBadRequest()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = null!,
-                ToUnit = "kilometer",
-                Value = 100
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.Contains("required", content, StringComparison.OrdinalIgnoreCase);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithEmptyFromUnit_ReturnsBadRequest()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "",
-                ToUnit = "kilometer",
-                Value = 100
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithFromUnitFromDifferentCategory_ReturnsBadRequest()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "gram",
-                ToUnit = "kilometer",
-                Value = 100
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Invalid from units", content);
-        }
-
-        #endregion
-
-        #region Invalid ToUnit Tests
-
-        [Fact]
-        public async Task Put_Convert_WithInvalidToUnit_ReturnsBadRequest()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "meter",
-                ToUnit = "invalid",
-                Value = 100
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Invalid to units", content);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithNullToUnit_ReturnsBadRequest()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "meter",
-                ToUnit = null!,
-                Value = 100
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.Contains("required", content, StringComparison.OrdinalIgnoreCase);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithEmptyToUnit_ReturnsBadRequest()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "meter",
-                ToUnit = "",
-                Value = 100
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithToUnitFromDifferentCategory_ReturnsBadRequest()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "meter",
-                ToUnit = "gram",
-                Value = 100
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            var content = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Invalid to units", content);
-        }
-
-        #endregion
-
-        #region Invalid Value Tests
-
-        #endregion
-
-        #region Response Format Tests
-
-        [Fact]
-        public async Task Put_Convert_Response_HasCorrectContentType()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "meter",
-                ToUnit = "kilometer",
-                Value = 1000
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal("application/json", response.Content.Headers.ContentType?.MediaType);
-        }
-
-        [Fact]
-        public async Task Put_Convert_Response_ContainsResultAndToUnit()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "meter",
-                ToUnit = "kilometer",
-                Value = 1000
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
-            Assert.NotNull(result);
-            Assert.NotNull(result.Result);
-            Assert.NotNull(result.ToUnit);
-            Assert.IsType<double>(result.Result);
-            Assert.IsType<string>(result.ToUnit);
-        }
-
-        #endregion
-
-        #region Multiple Conversions
-
-        [Theory]
-        [InlineData("length", "meter", "kilometer", 1000, 1)]
-        [InlineData("length", "kilometer", "meter", 1, 1000)]
-        [InlineData("mass", "kilogram", "gram", 1, 1000)]
-        [InlineData("mass", "gram", "kilogram", 1000, 1)]
-        [InlineData("temperature", "celsius", "fahrenheit", 0, 32)]
-        [InlineData("temperature", "fahrenheit", "celsius", 32, 0)]
-        public async Task Put_Convert_VariousConversions_ReturnsCorrectResults(
-            string category, string fromUnit, string toUnit, double value, double expected)
-        {
-            var request = new ConvertRequest
-            {
-                Category = category,
-                FromUnit = fromUnit,
-                ToUnit = toUnit,
-                Value = value
-            };
-
-            var response = await _client.PutAsJsonAsync("/convert", request);
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
-            Assert.NotNull(result);
-            Assert.NotNull(result.Result);
-            Assert.Equal(expected, result.Result.Value, precision: 0);
-        }
-
-        #endregion
-
-        #region Endpoint Method Tests
-
-        [Fact]
-        public async Task Put_Convert_WithGetRequest_ReturnsMethodNotAllowed()
-        {
-            var request = new ConvertRequest
-            {
-                Category = "length",
-                FromUnit = "meter",
-                ToUnit = "kilometer",
-                Value = 1000
-            };
-
-            var response = await _client.GetAsync("/convert");
-
-            Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task Put_Convert_WithPostRequest_ReturnsMethodNotAllowed()
+        public async Task Post_Convert_WhenValidLengthRequest_ReturnsOkWithCorrectResult()
         {
             var request = new ConvertRequest
             {
@@ -567,18 +38,300 @@ namespace UnitConverter.Tests
 
             var response = await _client.PostAsJsonAsync("/convert", request);
 
-            Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
+            Assert.NotNull(result);
+            Assert.Equal(1.0, result.Result);
+            Assert.Equal("kilometer", result.ToUnit);
+        }
+
+        [Theory]
+        [InlineData("length", "meter", "kilometer", 1000, 1)]
+        [InlineData("length", "kilometer", "meter", 1, 1000)]
+        [InlineData("length", "meter", "millimeter", 0.5, 500)]
+        [InlineData("length", "meter", "meter", 42.5, 42.5)]
+        [InlineData("mass", "kilogram", "gram", 1, 1000)]
+        [InlineData("mass", "gram", "kilogram", 1000, 1)]
+        [InlineData("temperature", "celsius", "fahrenheit", 0, 32)]
+        [InlineData("temperature", "fahrenheit", "celsius", 32, 0)]
+        public async Task Post_Convert_WhenVariousConversions_ReturnsCorrectResults(
+            string category, string fromUnit, string toUnit, double value, double expected)
+        {
+            var request = new ConvertRequest
+            {
+                Category = category,
+                FromUnit = fromUnit,
+                ToUnit = toUnit,
+                Value = value
+            };
+
+            var response = await _client.PostAsJsonAsync("/convert", request);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
+            Assert.NotNull(result);
+            Assert.Equal(expected, result.Result!.Value, precision: 0);
+            Assert.Equal(toUnit.ToLowerInvariant(), result.ToUnit.ToLowerInvariant());
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1000)]
+        public async Task Post_Convert_WhenSpecialNumericValues_ReturnsCorrectResult(double value)
+        {
+            var request = new ConvertRequest
+            {
+                Category = "length",
+                FromUnit = "meter",
+                ToUnit = "kilometer",
+                Value = value
+            };
+
+            var response = await _client.PostAsJsonAsync("/convert", request);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
+            Assert.NotNull(result);
+            Assert.Equal(value / 1000, result.Result!.Value);
         }
 
         #endregion
 
-        #region Case Insensitive Unit Tests
+        #region Validation Tests
+
+        [Fact]
+        public async Task Post_Convert_WhenNullValue_ReturnsBadRequest()
+        {
+            var request = new ConvertRequest
+            {
+                Category = "length",
+                FromUnit = "meter",
+                ToUnit = "kilometer",
+                Value = null
+            };
+
+            var response = await _client.PostAsJsonAsync("/convert", request);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        #endregion
+
+        #region Category Validation Tests
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public async Task Post_Convert_WhenCategoryIsNullOrEmpty_ReturnsBadRequest(string? category)
+        {
+            var request = new ConvertRequest
+            {
+                Category = category!,
+                FromUnit = "meter",
+                ToUnit = "kilometer",
+                Value = 100
+            };
+
+            var response = await _client.PostAsJsonAsync("/convert", request);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.Contains("required", content, StringComparison.OrdinalIgnoreCase);
+        }
+
+        [Theory]
+        [InlineData("invalid")]
+        [InlineData("weight")]
+        public async Task Post_Convert_WhenInvalidCategory_ReturnsBadRequest(string category)
+        {
+            var request = new ConvertRequest
+            {
+                Category = category,
+                FromUnit = "kilogram",
+                ToUnit = "gram",
+                Value = 1
+            };
+
+            var response = await _client.PostAsJsonAsync("/convert", request);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.Contains("Invalid category", content);
+        }
+
+        [Theory]
+        [InlineData("LENGTH")]
+        [InlineData("MaSs")]
+        [InlineData("TEMPERATURE")]
+        public async Task Post_Convert_WhenCategoryIsMixedCase_ReturnsOk(string category)
+        {
+            var fromUnit = category.ToLowerInvariant() switch
+            {
+                "length" => "meter",
+                "mass" => "gram",
+                "temperature" => "celsius",
+                _ => "meter"
+            };
+
+            var toUnit = category.ToLowerInvariant() switch
+            {
+                "length" => "kilometer",
+                "mass" => "kilogram",
+                "temperature" => "fahrenheit",
+                _ => "kilometer"
+            };
+
+            var value = category.ToLowerInvariant() switch
+            {
+                "temperature" => 0,
+                _ => 1000
+            };
+
+            var request = new ConvertRequest
+            {
+                Category = category,
+                FromUnit = fromUnit,
+                ToUnit = toUnit,
+                Value = value
+            };
+
+            var response = await _client.PostAsJsonAsync("/convert", request);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
+            Assert.NotNull(result);
+        }
+
+        #endregion
+
+        #region Unit Validation Tests
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task Post_Convert_WhenFromUnitIsNullOrEmpty_ReturnsBadRequest(string? fromUnit)
+        {
+            var request = new ConvertRequest
+            {
+                Category = "length",
+                FromUnit = fromUnit!,
+                ToUnit = "kilometer",
+                Value = 100
+            };
+
+            var response = await _client.PostAsJsonAsync("/convert", request);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.Contains("required", content, StringComparison.OrdinalIgnoreCase);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task Post_Convert_WhenToUnitIsNullOrEmpty_ReturnsBadRequest(string? toUnit)
+        {
+            var request = new ConvertRequest
+            {
+                Category = "length",
+                FromUnit = "meter",
+                ToUnit = toUnit!,
+                Value = 100
+            };
+
+            var response = await _client.PostAsJsonAsync("/convert", request);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.Contains("required", content, StringComparison.OrdinalIgnoreCase);
+        }
+
+        [Fact]
+        public async Task Post_Convert_WhenFromUnitIsInvalid_ReturnsBadRequest()
+        {
+            var request = new ConvertRequest
+            {
+                Category = "length",
+                FromUnit = "invalid",
+                ToUnit = "kilometer",
+                Value = 100
+            };
+
+            var response = await _client.PostAsJsonAsync("/convert", request);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.Contains("Invalid from units", content);
+        }
+
+        [Fact]
+        public async Task Post_Convert_WhenToUnitIsInvalid_ReturnsBadRequest()
+        {
+            var request = new ConvertRequest
+            {
+                Category = "length",
+                FromUnit = "meter",
+                ToUnit = "invalid",
+                Value = 100
+            };
+
+            var response = await _client.PostAsJsonAsync("/convert", request);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.Contains("Invalid to units", content);
+        }
+
+        [Theory]
+        [InlineData("gram")]
+        [InlineData("kilogram")]
+        public async Task Post_Convert_WhenFromUnitFromDifferentCategory_ReturnsBadRequest(string fromUnit)
+        {
+            var request = new ConvertRequest
+            {
+                Category = "length",
+                FromUnit = fromUnit,
+                ToUnit = "kilometer",
+                Value = 100
+            };
+
+            var response = await _client.PostAsJsonAsync("/convert", request);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.Contains("Invalid from units", content);
+        }
+
+        [Theory]
+        [InlineData("gram")]
+        [InlineData("kilogram")]
+        public async Task Post_Convert_WhenToUnitFromDifferentCategory_ReturnsBadRequest(string toUnit)
+        {
+            var request = new ConvertRequest
+            {
+                Category = "length",
+                FromUnit = "meter",
+                ToUnit = toUnit,
+                Value = 100
+            };
+
+            var response = await _client.PostAsJsonAsync("/convert", request);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.Contains("Invalid to units", content);
+        }
+
+        #endregion
+
+        #region Case Insensitive Tests
 
         [Theory]
         [InlineData("METER", "KILOMETER")]
         [InlineData("Meter", "Kilometer")]
         [InlineData("MeTer", "KiLoMeTeR")]
-        public async Task Put_Convert_WithMixedCaseUnits_ReturnsOk(string fromUnit, string toUnit)
+        public async Task Post_Convert_WhenUnitsAreMixedCase_ReturnsOk(string fromUnit, string toUnit)
         {
             var request = new ConvertRequest
             {
@@ -588,13 +341,40 @@ namespace UnitConverter.Tests
                 Value = 1000
             };
 
-            var response = await _client.PutAsJsonAsync("/convert", request);
+            var response = await _client.PostAsJsonAsync("/convert", request);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
             Assert.NotNull(result);
-            Assert.NotNull(result.Result);
-            Assert.Equal(1.0, result.Result.Value, precision: 0);
+            Assert.Equal(1.0, result.Result!.Value, precision: 0);
+        }
+
+        #endregion
+
+        #region Endpoint Method Tests
+
+        [Fact]
+        public async Task Post_Convert_WhenUsingGetRequest_ReturnsMethodNotAllowed()
+        {
+            var response = await _client.GetAsync("/convert");
+
+            Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_Convert_WhenUsingPutRequest_ReturnsMethodNotAllowed()
+        {
+            var request = new ConvertRequest
+            {
+                Category = "length",
+                FromUnit = "meter",
+                ToUnit = "kilometer",
+                Value = 1000
+            };
+
+            var response = await _client.PutAsJsonAsync("/convert", request);
+
+            Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
         }
 
         #endregion
@@ -602,7 +382,7 @@ namespace UnitConverter.Tests
         #region Edge Cases
 
         [Fact]
-        public async Task Put_Convert_WithVeryLargeValue_ReturnsOk()
+        public async Task Post_Convert_WhenValueIsVeryLarge_ReturnsOkWithCorrectResult()
         {
             var request = new ConvertRequest
             {
@@ -612,31 +392,31 @@ namespace UnitConverter.Tests
                 Value = 999999999
             };
 
-            var response = await _client.PutAsJsonAsync("/convert", request);
+            var response = await _client.PostAsJsonAsync("/convert", request);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
             Assert.NotNull(result);
-            Assert.True(result.Result > 0);
+            Assert.Equal(999999.999, result.Result!.Value, precision: 0);
         }
 
         [Fact]
-        public async Task Put_Convert_WithVerySmallValue_ReturnsOk()
+        public async Task Post_Convert_WhenValueIsVerySmall_ReturnsOkWithCorrectResult()
         {
             var request = new ConvertRequest
             {
                 Category = "length",
                 FromUnit = "millimeter",
                 ToUnit = "meter",
-                Value = 0.0001
+                Value = 0.5
             };
 
-            var response = await _client.PutAsJsonAsync("/convert", request);
+            var response = await _client.PostAsJsonAsync("/convert", request);
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var result = await response.Content.ReadFromJsonAsync<ConvertResponse>();
             Assert.NotNull(result);
-            Assert.True(result.Result >= 0);
+            Assert.Equal(0.0005, result.Result!.Value);
         }
 
         #endregion
