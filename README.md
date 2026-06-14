@@ -28,23 +28,23 @@ The API accepts a conversion request, validates the input against a fixed whitel
 
 ```text
 src/
-└── UnitConverter.Api
-    ├── Conversion
+└── UnitConverter.Api/
+    ├── Conversion/
     │   ├── ConversionService.cs
     │   └── UnitsDictionary.cs
-    ├── Extensions
+    ├── Extensions/
     │   └── ExceptionHandlerExtensions.cs
-    ├── Models
+    ├── Models/
     │   ├── ConvertRequest.cs
     │   └── ConvertResponse.cs
-    ├── Validation
+    ├── Validation/
     │   ├── AllowedUnits.cs
     │   └── ConvertRequestValidator.cs
     ├── Program.cs
     └── UnitConverter.Api.http
 
 tests/
-└── UnitConverter.Tests
+└── UnitConverter.Tests/
     ├── ConversionServiceTests.cs
     ├── ConvertEndpointTests.cs
     └── UnitConverter.Tests.csproj
